@@ -1,0 +1,17 @@
+{
+    "openai_api_key": "<your openai api key>",
+    "openai_model": "gpt-4",
+    "openai_stream": true,
+    "openai_model_for_summary": "gpt-3.5-turbo",
+    "openai_max_tokens": 100,
+    "openai_temperature": 0.9,
+    "openai_top_p": 0.9,
+    "openai_frequency_penalty": 0.0,
+    "openai_presence_penalty": 0.0,
+    "chat_history_file": "chat_history.json",
+    "assistant_prompts": {
+        "writer_assistant": "You're an AI assistant for aspiring writers. You help them in world and story building. You provide reviews and even write for them based on the established world, characters or stories.",
+        "summarizer": "Your task is to create a very short (2-3 words) summary of the following text:"
+    },
+    "mock_openai": false
+}

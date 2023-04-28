@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3">
+        <h5>Chat Sessions</h5>
+        <ul class="list-group">
+          {% for chat_session in chat_sessions %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <a class="chat-session-link" href="{{ url_for('index') }}{{chat_session.id}}">{{ chat_session.name }}</a>
+              <form action="{{ url_for('delete_chat_session', session_id=chat_session.id) }}" method="post" class="delete-chat-session-form">
+                <button type="submit" class="btn btn-link p-0">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="col-md-9">
+        <h3 class="text-center">Bear GPT</h3>
+        <div class="d-flex justify-content-between mb-3">
+          <button id="new-chat-session" class="btn btn-primary new-session-btn">New Chat</button>
+          {% if not empty %}
+          <form action="{{ url_for('flush') }}" method="post">
+            <button type="submit" class="btn btn-danger">Flush Chat History</button>
+          </form>
+          {% endif %}
+        </div>
+        {% if not empty %}
+        <div class="chat-wrapper">
+        <div id="chat-box" class="chat-box">
+          {% for message in chat_history %}
+            <div class="message message-{{ 'sent' if message.role == 'user' else 'received' }}">{{ message.content }}</div>
+          {% endfor %}
+          {% if streaming %}
+            <div class="message message-received" id="stream-target"></div>
+          {% endif %}
+        </div>
+        <form method="POST" id="message-form">
+          <div class="input-group">
+            <textarea name="message" id="message-input" class="form-control" rows="8" placeholder="Type your message here..." required></textarea>
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-primary btn-send">
+                <span id="send-text">Send</span>
+                <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+              </button>
+            </span>
+          </div>
+        </form>
+        </div>
+        <script>
+          // Scroll the chat history to the bottom
+          const chatBox = document.getElementById("chat-box");
+          chatBox.scrollTop = chatBox.scrollHeight;
+
+          $(document).ready(function () {
+            $("#message-form").on("submit", function (event) {
+              event.preventDefault();
+
+              $("#send-text").css("display", "none");
+              $("#spinner").css("display", "inline-block");
+              $("button[type='submit']").attr("disabled", true);
+
+              setTimeout(() => {
+                this.submit();
+              }, 100);
+            });
+          });
+          $("#new-chat-session").on("click", function () {
+            $("#newChatSessionModal").modal("show");
+          });          
+        </script>
+        {% if streaming %}
+        <script>
+          url="{{ url_for('index') }}stream/{{ session_id}}";
+          console.log(url)
+          var source = new EventSource("{{ url_for('index') }}stream/{{ session_id}}");
+          source.onmessage = function(event) {
+            console.log(event.data)
+            if (event.data.includes("\n")) {
+              console.log("The string contains a line break.");
+            }
+            if (event.data == "[[stop]]"){
+                console.log('STOP_DETECTED')
+                source.close()
+            } else {
+                document.getElementById("stream-target").innerHTML += event.data.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+            }
+        };
+        </script>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <!-- New Chat Session Modal -->
+  <div class="modal fade" id="newChatSessionModal" tabindex="-1" role="dialog" aria-labelledby="newChatSessionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newChatSessionModalLabel">New Chat Session</h5>
+        </div>
+        <form method="POST" id="new-chat-session-form" action="{{ url_for('create_new_chat_session') }}">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="first-message">First message:</label>
+              <textarea class="form-control" id="first-message" name="first_message" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close-modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    // document.getElementById("close-modal").addEventListener("click", function () {
+    //   console.log('Jebote')
+    //   var modal = new bootstrap.Modal(document.getElementById("newChatSessionModal"));
+    //   console.log(modal)
+    //   modal.hide();
+    // });
+  </script>
+  
+{% endblock %}
