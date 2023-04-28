@@ -48,3 +48,8 @@ lib/
 local/
 pip-wheel-metadata/
 share/
+
+# BearGPT specific files
+
+beargpt/chat_history.json
+beargpt/config.json

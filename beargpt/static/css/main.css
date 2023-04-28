@@ -8,16 +8,20 @@ body {
   flex-direction: column;
   padding-top: 50px;
   font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
+  background-color: #212529 !important;
+  /* color: #f8f9fa; */
 }
 
+h3 {
+  color: #f8f9fa;
+}
 
 #chat-box {
   max-height: 600px; /* Set a max-height value to limit the height */
   overflow-y: scroll;
-  border: 1px solid #ced4da;
+  border: 1px solid #495057;
   border-radius: 5px;
-  background-color: white;
+  background-color: #343a40;
   margin-bottom: 10px;
   overflow-y: scroll;
   padding: 20px;
@@ -71,7 +75,8 @@ h1 {
   clear: both;
   margin-right: 25%;
   margin-bottom: 10px;
-  background-color: #e9ecef;
+  background-color: #495057;
+  color: white;
 }
 
 #message-form {
@@ -82,27 +87,38 @@ h1 {
   box-shadow: none;
 }
 
+.form-control {
+  background-color: #495057 !important;
+  border-color: #495057 !important;
+  color: #f8f9fa;
+}
+
 .input-group {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
 }
 
 .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #5a5a5a !important;
+  border-color: #5a5a5a !important;
   box-shadow: none;
+  color: #f8f9fa !important;
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: #0069d9;
-  border-color: #0062cc;
+  background-color: #4a4a4a !important;
+  border-color: #3a3a3a !important;
+  color: #f8f9fa !important;
 }
 
 .btn-primary:active {
-  background-color: #0062cc;
-  border-color: #0056b3;
+  background-color: #3a3a3a !important;
+  border-color: #2a2a2a !important;
+  color: #f8f9fa !important;
 }
+
+
 
 #chat-box::after {
   content: "";
@@ -125,6 +141,8 @@ textarea.form-control {
   display: flex;
   align-items: flex-start;
   width: 100%;
+  background-color: #495057;
+  border-color: #495057;
 }
 
 .input-group-btn {
@@ -149,17 +167,65 @@ textarea.form-control {
 }
 
 .chat-session-link {
-  color: #007bff;
+  color: #a9b2bd;
   text-decoration: none;
   margin-right: 10px;
 }
 
 .chat-session-link:hover,
 .chat-session-link:focus {
-  color: #0056b3;
+  color: #f8f9fa;
   text-decoration: underline;
 }
 
 .delete-chat-session-form {
   display: inline;
+}
+
+.delete-chat-session-form .btn {
+  color: #c23616; /* Adjust this color to your desired red-ish color */
+}
+
+.delete-chat-session-form .btn:hover,
+.delete-chat-session-form .btn:focus {
+  color: #a93226; /* Adjust this color for hover and focus state */
+  text-decoration: none;
+}
+
+.container-fluid {
+  background-color: #212529;
+}
+
+.list-group {
+  background-color: #343a40;
+}
+
+.list-group-item {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.btn-danger:active {
+  background-color: #bd2130;
+  border-color: #b21f2d;
+}
+
+.modal-content {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.modal-header {
+  border-bottom: 1px solid #495057;
 }
