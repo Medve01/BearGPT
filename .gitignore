@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local development server
+.env
+
+# Log files
+*.log
+*.log.*
+
+# IDE settings and project files
+.vscode/
+*.sublime-workspace
+*.sublime-project
+*.pyc
+
+# Dependency directories
+venv/
+flaskenv
+env/
+*.env
+poetry.lock
+__pypackages__/
+
+# Compiled Python files
+*.pyc
+*.pyo
+*.pyd
+
+# Compiled C extensions
+*.so
+*.dll
+*.pyd
+
+# Build files
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Distribution / packaging
+.Python
+bin/
+include/
+lib/
+local/
+pip-wheel-metadata/
+share/
