@@ -68,6 +68,7 @@ h1 {
   margin-bottom: 10px;
   background-color: #007bff;
   color: white;
+  margin-right: 40px;
 }
 
 .message-received {
@@ -82,6 +83,48 @@ h1 {
 #message-form {
   margin-bottom: 10px;
 }
+
+.message-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.message-wrapper-sent {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-save-message-sent {
+  position: absolute;
+  right: 0;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  color: #adb5bd;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-save-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  color: #adb5bd;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-save-message:hover {
+  color: #6c757d;
+}
+
 
 .form-control:focus {
   box-shadow: none;
@@ -132,7 +175,6 @@ textarea.form-control {
   height: 152px;
   max-height: 152px;
   min-height: 152px;
-  /* height: 152px; */
   flex-grow: 1;
   box-sizing: border-box;
 }
@@ -183,12 +225,12 @@ textarea.form-control {
 }
 
 .delete-chat-session-form .btn {
-  color: #c23616; /* Adjust this color to your desired red-ish color */
+  color: #c23616;
 }
 
 .delete-chat-session-form .btn:hover,
 .delete-chat-session-form .btn:focus {
-  color: #a93226; /* Adjust this color for hover and focus state */
+  color: #a93226;
   text-decoration: none;
 }
 
@@ -222,10 +264,43 @@ textarea.form-control {
 }
 
 .modal-content {
-  background-color: #343a40;
+  background-color: #343a40 !important;
   color: #f8f9fa;
 }
 
 .modal-header {
   border-bottom: 1px solid #495057;
+}
+
+.modal-body label {
+  color: #f8f9fa;
+}
+
+.modal-body .form-control {
+  background-color: #495057;
+  border-color: #495057;
+  color: #f8f9fa;
+}
+
+.modal-footer .btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #f8f9fa;
+}
+
+.modal-footer .btn-secondary:hover,
+.modal-footer .btn-secondary:focus {
+  background-color: #5a6e7b;
+  border-color: #495057;
+  color: #f8f9fa;
+}
+
+.modal-footer .btn-secondary:active {
+  background-color: #495057;
+  border-color: #343a40;
+  color: #f8f9fa;
+}
+
+.modal-title {
+  color: #f8f9fa;
 }

@@ -23,8 +23,8 @@
         <div class="d-flex justify-content-between mb-3">
           <button id="new-chat-session" class="btn btn-primary new-session-btn">New Chat</button>
           {% if not empty %}
-          <form action="{{ url_for('flush') }}" method="post">
-            <button type="submit" class="btn btn-danger">Flush Chat History</button>
+          <form action="{{ url_for('remember', session_id=session_id) }}" method="post">
+            <button type="submit" class="btn btn-light">Remember this chat</button>
           </form>
           {% endif %}
         </div>
@@ -32,7 +32,25 @@
         <div class="chat-wrapper">
         <div id="chat-box" class="chat-box">
           {% for message in chat_history %}
-            <div class="message message-{{ 'sent' if message.role == 'user' else 'received' }}">{{ message.content }}</div>
+            {% if message.role == 'user' %}
+              <div class="message-wrapper-sent">
+                <form action="{{ url_for('delete_message', session_id=session_id, message_id=message.message_id) }}" method="post" class="delete-chat-session-form">
+                  <button class="btn btn-save-message-sent" title="Delete message" type="submit">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </form>
+                <div class="message message-sent">{{ message.content }}</div>
+              </div>
+            {% else %}
+              <div class="message-wrapper">
+                <div class="message message-received">{{ message.content }}</div>
+                <form action="{{ url_for('delete_message', session_id=session_id, message_id=message.message_id) }}" method="post" class="delete-chat-session-form">
+                  <button class="btn btn-save-message" title="Delete message" type="submit">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </form>
+              </div>
+            {% endif %}
           {% endfor %}
           {% if streaming %}
             <div class="message message-received" id="stream-target"></div>
@@ -118,12 +136,9 @@
     </div>
   </div>
   <script>
-    // document.getElementById("close-modal").addEventListener("click", function () {
-    //   console.log('Jebote')
-    //   var modal = new bootstrap.Modal(document.getElementById("newChatSessionModal"));
-    //   console.log(modal)
-    //   modal.hide();
-    // });
+          $("#new-chat-session").on("click", function () {
+            $("#newChatSessionModal").modal("show");
+          }); 
   </script>
   
 {% endblock %}

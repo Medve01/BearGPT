@@ -33,7 +33,8 @@ def generate_response(chat_history):
 
 def generate_short_summary(chat_history):
     system_prompt = {"role": "system", "content": config.config("assistant_prompts")["summarizer"]}
-    messages = [system_prompt] + chat_history
+    prompt = {"role": "user", "content": "Please summarize this previous message in 5 words or less:\n" + chat_history[-1]["content"]}
+    messages = [system_prompt, prompt]
     completion = openai.ChatCompletion.create(
         model = config.config("openai_model_for_summary"),
         messages = messages
