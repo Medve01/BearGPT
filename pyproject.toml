@@ -14,6 +14,7 @@ langchain = "^0.0.149"
 flask-wtf = "^1.1.1"
 tinydb = "^4.7.1"
 pinecone-client = "^2.2.1"
+nltk = "^3.8.1"
 
 
 [build-system]

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, Response
 from flask_bootstrap import Bootstrap
 import os, time
-from assistant import openai, chat_history, config, memory
+from assistant import open_ai, chat_history, config, memory
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set the secret key for Flask sessions
@@ -22,7 +22,7 @@ def get_openai_response(message):
         assistant_response = 'testing'
         time.sleep(0.5)
     else:
-        assistant_response = openai.generate_response(message)
+        assistant_response = open_ai.generate_response(message)
     return assistant_response
 
 @app.route("/", methods=["GET"])
@@ -46,7 +46,7 @@ def chats_get_response_stream(session_id):
     def stream():
         collected_response = ""
         # assistant_response = openai.generate_response_stream(chat_history.get_chat_history(session_id))
-        for chunk in openai.generate_response_stream(chat_history.get_chat_history(session_id)):
+        for chunk in open_ai.generate_response_stream(chat_history.get_chat_history(session_id)):
             if chunk is not None:
                 if "\n" in chunk:
                     print("newline found")
@@ -83,7 +83,7 @@ def create_new_chat_session():
     first_message = request.form["first_message"]
     new_session_id = chat_history.create_chat_session("unnamed session")
     chat_history.store_message(new_session_id, "user", first_message)
-    chat_summary = openai.generate_short_summary(chat_history.get_chat_history(new_session_id))
+    chat_summary = open_ai.generate_short_summary(chat_history.get_chat_history(new_session_id))
     assistant_response = get_openai_response(chat_history.get_chat_history(new_session_id))
     chat_history.store_message(new_session_id, "assistant", assistant_response)
     chat_history.rename_chat_session(new_session_id, chat_summary)
