@@ -1,4 +1,7 @@
 {
+    "pinecone_api_key": "",
+    "pinecone_index": "beargpt",
+    "pinecone_environment": "us-east4-gcp",
     "openai_api_key": "",
     "openai_model": "gpt-4",
     "openai_stream": true,
@@ -8,9 +11,6 @@
     "openai_top_p": 0.9,
     "openai_frequency_penalty": 0.0,
     "openai_presence_penalty": 0.0,
-    "pinecone_api_key": "",
-    "pinecone_index": "",
-    "pinecone_environment": "",
     "chat_history_file": "chat_history.json",
     "chat_history_db": "chat_history.db",
     "assistant_prompts": {
@@ -18,5 +18,8 @@
         "titler": "Your task is to create a very short (2-3 words) summary . You are not allowed to use quotes or double quotes.",
         "summarizer": "I'd like you to write a summary of what we discussed so far. Make it detailed, do not leave anything out that might be relevant later."
     },
-    "mock_openai": false
+    "mock_openai": false,
+    "log_level": "DEBUG",
+    "log_to_stdout": true,
+    "log_directory": "."
 }
