@@ -7,7 +7,7 @@ openai.api_key = config.config("openai_api_key")
 
 def create_system_prompt(assistant, query):
     base_prompt = {"role": "system", "content": config.config("assistant_prompts")[assistant]}
-    remember = memory.recall('', query)
+    remember = memory.recall(query)
     base_prompt["content"] += remember
     return base_prompt
 

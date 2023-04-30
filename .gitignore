@@ -53,3 +53,5 @@ share/
 
 beargpt/chat_history.json
 beargpt/config.json
+beargpt/chat_history.db*
+beargpt/chat_history.db

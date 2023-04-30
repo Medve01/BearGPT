@@ -46,15 +46,17 @@ def get_chat_sessions():
     sessions = [{"id": row[0], "name": row[1]} for row in result]
     return sessions
 
-def get_chat_history(session_id, raw=False):
+def get_chat_history(session_id, raw=False, skip_remembered=False):
     conn = create_connection()
     cursor = conn.cursor()
 
     if raw:
-        cursor.execute("SELECT session_id, role, content, message_id FROM history WHERE session_id=?", (session_id,))
+        SQL = "SELECT * FROM history WHERE session_id=?"
     else:
-        cursor.execute("SELECT role, content FROM history WHERE session_id=?", (session_id,))
-
+        SQL = "SELECT role, content FROM history WHERE session_id=?"
+    if skip_remembered:
+        SQL += " AND remembered = 0"
+    cursor.execute(SQL, (session_id,))
     result = cursor.fetchall()
     conn.close()
 
@@ -75,6 +77,13 @@ def store_message(session_id, sender, message):
     cursor.close()
     conn.close()
 
+def remember_message(message_id):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE history SET role='remembered' WHERE message_id=?", (message_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def flush_chat_history(session_id):
     conn = create_connection()
