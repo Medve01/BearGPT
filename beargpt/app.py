@@ -101,7 +101,7 @@ def delete_message(session_id, message_id):
 
 @app.route("/remember/<session_id>", methods=["POST"])
 def remember(session_id):
-    memory.remember(session_id)
+    memory.remember(session_id=session_id)
     return redirect(url_for("chats_get", session_id=session_id))
 
 if __name__ == "__main__":

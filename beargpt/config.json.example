@@ -1,5 +1,5 @@
 {
-    "openai_api_key": "<your openai api key>",
+    "openai_api_key": "",
     "openai_model": "gpt-4",
     "openai_stream": true,
     "openai_model_for_summary": "gpt-3.5-turbo",
@@ -8,10 +8,15 @@
     "openai_top_p": 0.9,
     "openai_frequency_penalty": 0.0,
     "openai_presence_penalty": 0.0,
+    "pinecone_api_key": "",
+    "pinecone_index": "",
+    "pinecone_environment": "",
     "chat_history_file": "chat_history.json",
+    "chat_history_db": "chat_history.db",
     "assistant_prompts": {
         "writer_assistant": "You're an AI assistant for aspiring writers. You help them in world and story building. You provide reviews and even write for them based on the established world, characters or stories.",
-        "summarizer": "Your task is to create a very short (2-3 words) summary of the following text:"
+        "titler": "Your task is to create a very short (2-3 words) summary . You are not allowed to use quotes or double quotes.",
+        "summarizer": "I'd like you to write a summary of what we discussed so far. Make it detailed, do not leave anything out that might be relevant later."
     },
     "mock_openai": false
 }

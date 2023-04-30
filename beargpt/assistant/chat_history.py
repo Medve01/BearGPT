@@ -61,7 +61,7 @@ def get_chat_history(session_id, raw=False, skip_remembered=False):
     conn.close()
 
     if raw:
-        history = [{"session_id": row[0], "role": row[1], "content": row[2], "message_id": row[3]} for row in result]
+        history = [{"session_id": row[0], "role": row[1], "content": row[2], "message_id": row[3], "remembered": row[4]} for row in result]
     else:
         history = [{"role": row[0], "content": row[1]} for row in result]
 
@@ -103,3 +103,8 @@ def delete_message(session_id, message_id):
     cursor.execute("DELETE FROM history WHERE session_id=? AND message_id=?", (session_id, message_id))
     conn.commit()
 
+def update_remembered(session_id):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE history SET role='remembered' WHERE session_id=?", (session_id,))
+    conn.commit()

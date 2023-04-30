@@ -18,15 +18,38 @@ def calculate_vectors(text):
     embeds = [record['embedding'] for record in response['data']]
     return embeds
 
-def remember(session_id):
+def remember(session_id=None, history=None):
+    """_summary_
+
+    Args:
+        session_id (_type_, optional): _description_. Defaults to None.
+        chat_history (_type_, optional): _description_. Defaults to None.
+
+    This function is used in two places:
+        1) when a user presses the "Remember this chat session" button
+            In this case, session_id is passed, chat_history must be None
+            We'll fetch the chat history from the database, skip the remembered messages, and upsert the embeddings
+        2) when rebuild_long_term_memory.py is run
+            In this case, session_id is None, chat_history is passed
+            We use the passed chat_history, it must only contain messages with remembered = 1
+    """
+    if session_id is None and chat_history is None:
+        raise Exception("Must provide either session_id or chat_history")
+    if history is None:
+        history = chat_history.get_chat_history(session_id, skip_remembered=True)
+    if session_id is None:
+        history = chat_history
     batch_size = 1
-    history = chat_history.get_chat_history(session_id, skip_remembered=True)
+    # history = chat_history.get_chat_history(session_id, skip_remembered=True)
     index = pinecone.Index(config.config("pinecone_index"))
     # first, call open_ai to summarize the chat history
+    print("Generating long summary")
     long_summary = open_ai.generate_long_summary(history)
+    print(long_summary)
     # then, split the summary into sentences
     sentences = nltk.sent_tokenize(long_summary)
     # then, calculate the embeddings for each sentence
+    print("Calculating and updating embeddings for %d sentences" % len(sentences))
     for i in range(0, len(sentences), batch_size):
         i_end = min(i+batch_size, len(sentences))
         lines_batch = sentences[i:i+batch_size]
@@ -36,6 +59,9 @@ def remember(session_id):
         # then, upsert the embeddings into pinecone
         to_upsert = zip(ids_batch, embeds, meta)
         index.upsert(vectors=list(to_upsert))
+    # finally, update the chat history to mark the messages as remembered
+    if session_id is not None:
+        chat_history.update_remembered(session_id)
 
 def recall(query):
     index = pinecone.Index(config.config("pinecone_index"))
@@ -48,3 +74,7 @@ def recall(query):
             for_prompt += t
         for_prompt += '\n'
     return for_prompt
+
+def forget_everything():
+    index = pinecone.Index(config.config("pinecone_index"))
+    index.delete(namespace='', delete_all=True)
