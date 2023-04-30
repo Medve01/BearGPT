@@ -33,12 +33,11 @@ def remember(session_id=None, history=None):
             In this case, session_id is None, chat_history is passed
             We use the passed chat_history, it must only contain messages with remembered = 1
     """
-    if session_id is None and chat_history is None:
+    if session_id is None and history is None:
         raise Exception("Must provide either session_id or chat_history")
     if history is None:
         history = chat_history.get_chat_history(session_id, skip_remembered=True)
-    if session_id is None:
-        history = chat_history
+
     batch_size = 1
     # history = chat_history.get_chat_history(session_id, skip_remembered=True)
     index = pinecone.Index(config.config("pinecone_index"))
