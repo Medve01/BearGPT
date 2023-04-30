@@ -19,6 +19,6 @@ for session in chat_sessions:
         print(remembered_messages[0])
         print("Rebuilding memory")
         # remember this chat history
-        # memory.remember(history=remembered_messages)
+        memory.remember(history=remembered_messages)
         
         

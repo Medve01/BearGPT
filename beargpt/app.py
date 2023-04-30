@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, session, R
 from flask_bootstrap import Bootstrap
 import os, time
 from assistant import open_ai, chat_history, config, memory
+from assistant.logger import configure_logger
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set the secret key for Flask sessions
 Bootstrap(app)
-
+configure_logger(app)
+app.logger.info("Starting BearGPT")
 def get_default_session_id():
     sessions = chat_history.get_chat_sessions()
     default_session = [session for session in sessions if session['name'] == 'Default session']

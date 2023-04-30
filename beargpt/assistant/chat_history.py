@@ -1,5 +1,6 @@
 import sqlite3
 from uuid import uuid4
+from flask import current_app as app
 
 # Initialize the SQLite database
 db_file = 'chat_history.db'
@@ -9,18 +10,18 @@ def create_connection():
     return conn
 
 # Create tables if they don't exist
-conn = create_connection()
-cursor = conn.cursor()
-cursor.execute('''CREATE TABLE IF NOT EXISTS sessions
-                  (id TEXT PRIMARY KEY, name TEXT NOT NULL)''')
-cursor.execute('''CREATE TABLE IF NOT EXISTS history (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    session_id TEXT NOT NULL,
-                    role TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    message_id TEXT UNIQUE NOT NULL
-                );''')
-conn.commit()
+# conn = create_connection()
+# cursor = conn.cursor()
+# cursor.execute('''CREATE TABLE IF NOT EXISTS sessions
+#                   (id TEXT PRIMARY KEY, name TEXT NOT NULL)''')
+# cursor.execute('''CREATE TABLE IF NOT EXISTS history (
+#                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+#                     session_id TEXT NOT NULL,
+#                     role TEXT NOT NULL,
+#                     content TEXT NOT NULL,
+#                     message_id TEXT UNIQUE NOT NULL
+#                 );''')
+# conn.commit()
 
 
 def create_chat_session(name):
@@ -38,6 +39,7 @@ def delete_chat_session(session_id):
     conn.commit()
 
 def get_chat_sessions():
+    app.logger.debug("Getting chat sessions")
     conn = create_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM sessions")

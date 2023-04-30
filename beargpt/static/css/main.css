@@ -304,3 +304,77 @@ textarea.form-control {
 .modal-title {
   color: #f8f9fa;
 }
+
+.notification-box {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: -300px;
+  z-index: 999;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: right 0.5s;
+}
+
+.notification.hidden {
+  right: -300px;
+}
+
+.notification.visible {
+  right: 20px;
+}
+
+.notification-info {
+  background-color: #d6d8db;
+  color: #212529;
+}
+
+.notification-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.notification-error {
+  background-color: #dc3545;
+  color: #f8f9fa;
+}
+
+/* Remove toast header */
+.toast .toast-header {
+  display: none;
+}
+
+/* Add rounded rectangle shape to toast body */
+.toast .toast-body {
+  border-radius: 5px;
+  padding: 15px;
+}
+
+/* Update the background and text colors for the toast body */
+.toast-info {
+  background-color: #00838F !important;
+  color: #000000 !important;
+}
+
+.toast-progress {
+  background-color: #00838F !important;
+  color: #000000 !important;
+}
+
+.toast-warning {
+  background-color: #ffcc00 !important;
+  color: #212529 !important;
+}
+
+.toast-error {
+  background-color: #c82333 !important;
+  color: #f8f9fa !important;
+}

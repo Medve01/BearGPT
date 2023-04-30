@@ -2,6 +2,15 @@
 
 {% block content %}
   <div class="container-fluid">
+    <div id="notification-box" class="notification hidden"></div>
+    <div class="toast" id="notification-toast" style="position: fixed; top: 20px; right: 20px;">
+      <div class="toast-header">
+        <strong class="me-auto">Notification</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+      </div>
+    </div>
     <div class="row">
       <div class="col-md-3">
         <h5>Chat Sessions</h5>
@@ -129,7 +138,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="close-modal">Close</button>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="button" id="new-chat-session-button" class="btn btn-primary">Create</button>
           </div>
         </form>
       </div>
@@ -139,6 +148,68 @@
           $("#new-chat-session").on("click", function () {
             $("#newChatSessionModal").modal("show");
           }); 
+          $("#new-chat-session-button").on("click", function (event) {
+              event.preventDefault();
+              displayNotification("Creating new chat session and generating first response...", "progress");
+              $("#new-chat-session-button").attr("disabled", true);
+              $("#close-modal").attr("disabled", true);
+              setTimeout(() => {
+                $("#newChatSessionModal").modal("hide");
+                $("button[type='submit']").attr("disabled", true);
+                $("#new-chat-session-form").submit();
+              }, 100);
+            });
   </script>
+  <script>
+    async function sendRequest(endpoint, method, texts) {
+      const { startText, successText, errorText } = texts;
+
+      // Show the startText in the toast
+      displayNotification(startText, 'progress');
+
+      try {
+        const response = await fetch(endpoint, { method: method });
+        if (!response.ok) { // Check if the status code is not in the range of 2xx
+          throw new Error(`Request failed with status code: ${response.status}`);
+        }
+
+        // Show the successText toast
+        displayNotification(successText, 'info');
+      } catch (error) {
+
+        // Show the errorText toast
+        displayNotification(errorText, 'error');
+        console.log('error');
+      }
+    }
+
+    function displayNotification(message, notificationType) {
+      const toastElement = document.getElementById("notification-toast");
+      const toastHeader = toastElement.querySelector(".toast-header");
+      const toastBody = toastElement.querySelector(".toast-body");
+      console.log('displayNotification')
+      // Remove any existing notification type classes
+      toastBody.classList.remove('toast-info', 'toast-warning', 'toast-error', 'toast-progress');
+      
+      // Apply the appropriate CSS class for the current notification type
+      toastBody.classList.add(`toast-${notificationType}`);
+      
+      // toastBody.textContent = message;
+      if (notificationType == 'progress'){
+        message = '<i class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;&nbsp;' + message; 
+      }
+      toastBody.innerHTML = message
+      const toast = new bootstrap.Toast(toastElement, { autohide: notificationType != 'progress', delay: 3000 });
+      toast.show();
+    }
+  </script>
+
+    {% if notification %}
+    <script>
+      displayNotification("{{ notification.message }}", "{{ notification.type }}");
+    </script>
+    {% endif %}
+
+  
   
 {% endblock %}
