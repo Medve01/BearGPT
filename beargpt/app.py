@@ -50,8 +50,6 @@ def chats_get_response_stream(session_id):
         # assistant_response = openai.generate_response_stream(chat_history.get_chat_history(session_id))
         for chunk in open_ai.generate_response_stream(chat_history.get_chat_history(session_id)):
             if chunk is not None:
-                if "\n" in chunk:
-                    print("newline found")
                 chunk = chunk.replace("\n", "<br/>")
                 if chunk != "[[stop]]":
                     collected_response += chunk
@@ -59,7 +57,7 @@ def chats_get_response_stream(session_id):
                 yield 'data: %s\n\n' % chunk
         chat_history.store_message(session_id, "assistant", collected_response.replace("<br/>", "\n"))
     print("response_stream")
-    return Response(stream(), mimetype='text/event-stream')
+    return Response(stream(), mimetype='text/event-stream', headers={'X-Accel-Buffering': 'False', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive'})
 
 
 @app.route("/<session_id>", methods=["POST"])
