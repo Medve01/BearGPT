@@ -79,3 +79,4 @@ else:
         print("Database updated to version " + str(sql_number))
     cursor.close()
     conn.close()
+print("\033[92mAll done.\033[0m")
