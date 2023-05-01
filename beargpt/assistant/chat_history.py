@@ -39,7 +39,6 @@ def delete_chat_session(session_id):
     conn.commit()
 
 def get_chat_sessions():
-    app.logger.debug("Getting chat sessions")
     conn = create_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM sessions")
@@ -125,5 +124,5 @@ def get_summaries():
     cursor.execute("SELECT * FROM summaries")
     result = cursor.fetchall()
     conn.close()
-    summaries = [{"session_id": row[0], "summary": row[1]} for row in result]
+    summaries = [{"session_id": row[1], "summary": row[2]} for row in result]
     return summaries
