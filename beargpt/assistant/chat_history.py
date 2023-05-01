@@ -108,5 +108,22 @@ def delete_message(session_id, message_id):
 def update_remembered(session_id):
     conn = create_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE history SET role='remembered' WHERE session_id=?", (session_id,))
+    cursor.execute("UPDATE history SET remembered=1 WHERE session_id=?", (session_id,))
     conn.commit()
+
+def store_summary(session_id, summary):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO summaries (session_id, summary) VALUES (?, ?)", (session_id, summary))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def get_summaries():
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM summaries")
+    result = cursor.fetchall()
+    conn.close()
+    summaries = [{"session_id": row[0], "summary": row[1]} for row in result]
+    return summaries

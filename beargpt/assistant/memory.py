@@ -45,6 +45,8 @@ def remember(session_id=None, history=None):
     print("Generating long summary")
     long_summary = open_ai.generate_long_summary(history)
     print(long_summary)
+    # let's store the summary in the database
+    chat_history.store_summary(session_id, long_summary)
     # then, split the summary into sentences
     sentences = nltk.sent_tokenize(long_summary)
     # then, calculate the embeddings for each sentence
