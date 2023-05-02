@@ -32,10 +32,11 @@
         <div class="d-flex justify-content-between mb-3">
           <button id="new-chat-session" class="btn btn-primary new-session-btn">New Chat</button>
           {% if not empty %}
-          <form action="{{ url_for('remember', session_id=session_id) }}" method="post">
-            <button type="submit" class="btn btn-light">Remember this chat</button>
-          </form>
-          {% endif %}
+          <!-- <form action="{{ url_for('remember', session_id=session_id) }}" method="post"> -->
+            <!-- <button type="submit" class="btn btn-light">Remember this chat</button> -->
+          <!-- </form> -->
+            <button type="button" id="remember-button" class="btn btn-light">Remember this chat</button>
+            {% endif %}
         </div>
         {% if not empty %}
         <div class="chat-wrapper">
@@ -161,27 +162,46 @@
             });
   </script>
   <script>
-    async function sendRequest(endpoint, method, texts) {
-      const { startText, successText, errorText } = texts;
+async function sendRequest(endpoint, method, texts, data = null) {
+  const { startText, successText, errorText } = texts;
 
-      // Show the startText in the toast
-      displayNotification(startText, 'progress');
+  // Show the startText in the toast
+  displayNotification(startText, 'progress');
 
-      try {
-        const response = await fetch(endpoint, { method: method });
-        if (!response.ok) { // Check if the status code is not in the range of 2xx
-          throw new Error(`Request failed with status code: ${response.status}`);
-        }
+  // Prepare fetch options
+  const fetchOptions = {
+    method: method,
+    headers: {},
+  };
 
-        // Show the successText toast
-        displayNotification(successText, 'info');
-      } catch (error) {
+  // Add JSON payload if provided
+  if (data) {
+    fetchOptions.headers['Content-Type'] = 'application/json';
+    fetchOptions.body = JSON.stringify(data);
+  }
 
-        // Show the errorText toast
-        displayNotification(errorText, 'error');
-        console.log('error');
-      }
+  try {
+    const response = await fetch(endpoint, fetchOptions);
+    if (!response.ok) { // Check if the status code is not in the range of 2xx
+      throw new Error(`Request failed with status code: ${response.status}`);
     }
+
+    const jsonResponse = await response.json(); // Parse the JSON response
+
+    // Show the successText toast
+    displayNotification(successText, 'info');
+
+    return jsonResponse; // Return the JSON response when successful
+  } catch (error) {
+    // Show the errorText toast
+    displayNotification(errorText, 'error');
+    console.log('error');
+
+    return null; // Return null when not successful
+  }
+}
+
+
 
     function displayNotification(message, notificationType) {
       const toastElement = document.getElementById("notification-toast");
@@ -202,6 +222,24 @@
       const toast = new bootstrap.Toast(toastElement, { autohide: notificationType != 'progress', delay: 3000 });
       toast.show();
     }
+    $("#remember-button").on("click", async function () {
+      $("#remember-button").attr("disabled", true);
+      summarize_result = await sendRequest("{{ url_for('summarize', session_id=session_id) }}", "GET", {
+        startText: "Summarizing chat session...",
+        successText: "Summary generated.",
+        errorText: "Failed to generate summary",
+      });
+      console.log(summarize_result);
+      if (summarize_result != null) {
+        console.log(summarize_result);
+        await sendRequest("{{ url_for('remember') }}", "POST", {
+          startText: "Remembering session...",
+          successText: "Session stored in long-term memory.",
+          errorText: "Failed to store session in long-term memory.",
+        }, data={'summary': summarize_result['summary'], 'session_id': summarize_result['session_id']});
+      }
+      $("#remember-button").attr("disabled", false);
+    });
   </script>
 
     {% if notification %}

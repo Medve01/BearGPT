@@ -1,6 +1,7 @@
 import openai
 import pinecone
 import nltk
+import time
 from assistant import chat_history, config, open_ai
 
 openai.api_key = config.config("openai_api_key")
@@ -19,6 +20,9 @@ def calculate_vectors(text):
     return embeds
 
 def store_in_pinecone(content):
+    if config.config("skip_pinecone"):
+        time.sleep(2)
+        return
     sentences = nltk.sent_tokenize(content)
     batch_size = 1
     index = pinecone.Index(config.config("pinecone_index"))
@@ -43,13 +47,12 @@ def remember(session_id=None, summary=None):
         session_id (str, optional): A session id to remember. Defaults to None.
         summary (str, optional): A ready-made summary to remember. Defaults to None.
 
-    This function is used in two places:
-        1) when a user presses the "Remember this chat session" button
-            In this case, session_id is passed, summary must be None
+            If session_id is passed and summary is None
             We'll fetch the chat history from the database, skip the remembered messages, generate a summary, and upsert the embeddings
-        2) when rebuild_long_term_memory.py is run
-            In this case, session_id is None, summary is passed
+            If session_id is None, summary is passed
             We use the passed summary to usert the embeddings
+            If both are passed, we'll use the passed summary upsert the embeddings
+            and update the chat history to mark the messages as remembered
     """
     if session_id is None and summary is None:
         raise Exception("Must provide either session_id or chat_history")
@@ -60,10 +63,11 @@ def remember(session_id=None, summary=None):
         print("Generating long summary")
         long_summary = open_ai.generate_long_summary(history)
         print(long_summary)
-        # let's store the summary in the database for good measure
-        chat_history.store_summary(session_id, long_summary)
     else:
         long_summary = summary
+    if session_id is not None:
+        # then, store the summary in the database
+        chat_history.store_summary(session_id, long_summary)
     store_in_pinecone(long_summary)
     # finally, update the chat history to mark the messages as remembered
     if session_id is not None:

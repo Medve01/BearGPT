@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, Response
+from flask import Flask, render_template, request, redirect, url_for, session, Response, jsonify
 from flask_bootstrap import Bootstrap
 import os, time
 from assistant import open_ai, chat_history, config, memory
@@ -70,7 +70,7 @@ def chats_post(session_id):
     if not stream:
         assistant_response = get_openai_response(history)
         chat_history.store_message(session_id, "assistant", assistant_response)
-        history = chat_history.get_chat_history(session_id)
+        history = chat_history.get_chat_history(session_id, raw=True)
         # return redirect(url_for("index") +  session_id)
     return render_template("index.html",
                            chat_history=history,
@@ -99,10 +99,26 @@ def delete_message(session_id, message_id):
     chat_history.delete_message(session_id, message_id)
     return redirect(url_for("chats_get", session_id=session_id))
 
-@app.route("/remember/<session_id>", methods=["POST"])
-def remember(session_id):
-    memory.remember(session_id=session_id)
-    return redirect(url_for("chats_get", session_id=session_id))
+# @app.route("/remember/<session_id>", methods=["POST"])
+# def remember(session_id):
+#     memory.remember(session_id=session_id)
+#     return redirect(url_for("chats_get", session_id=session_id))
+
+@app.route("/summarize/<session_id>", methods=["GET"])
+def summarize(session_id):
+    chat_summary = open_ai.generate_long_summary(chat_history.get_chat_history(session_id))
+    return jsonify({"summary": chat_summary, "session_id": session_id})
+
+@app.route("/remember", methods=["POST"])
+def remember():
+    # the client sends a json object with the following structure:
+    # {
+        # "summary": "the summary of the chat"
+    # }
+    summary = request.json["summary"]
+    session_id = request.json["session_id"]
+    memory.remember(summary=summary, session_id=session_id)
+    return jsonify({"status": "success"})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
